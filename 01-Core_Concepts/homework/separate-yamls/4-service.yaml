@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: homework-svc
+  namespace: homework
+  labels:
+    app: hw
+spec:
+  type: NodePort
+  ports:
+  - port: 5000
+    nodePort: 32000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: hw

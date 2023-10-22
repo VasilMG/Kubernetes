@@ -1,0 +1,16 @@
+kubectl create namespace homework
+kubectl get namespaces
+kubectl run homework-1 --image shekeriev/k8s-oracle --labels="app=hw,tier=gold" -n homework
+kubectl kubectl label pods homework-1 tier- -n homework
+kubectl run homework-2 --image=shekeriev/k8s-oracle -n homework
+kubectl label pods homework-2 app=hw -n homework
+kubectl annotate pods homework-1 purpose=homework -n homework
+kubectl annotate pods homework-2 purpose=homework -n homework
+kubectl create service nodeport homework-svc --tcp=5000:5000 --namespace=homework
+kubectl patch svc homework-svc -n homework -p '{\"spec\": {\"selector\": {\"app\": \"hw\"}, \"ports\": [{\"port\": 5000, \"targetPort\": 5000, \"nodePort\": 32000}]}}'
+
+Create all objects with separate files:
+kubectl apply -f ./separate-yamls
+
+as one manifest:
+kubectl apply -f ./all.yaml

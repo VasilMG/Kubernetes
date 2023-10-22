@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: homework-1
+  labels:
+    app: hw
+spec:
+  containers:
+  - name: homework-1
+    image: shekeriev/k8s-oracle

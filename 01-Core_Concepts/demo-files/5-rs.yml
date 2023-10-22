@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: appa-rs
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: appa
+  template:
+    metadata:
+      labels:
+        app: appa
+        ver: v1
+    spec:
+      containers:
+      - name: appa-container
+        image: shekeriev/k8s-appa:v1
+        ports:
+        - containerPort: 80
