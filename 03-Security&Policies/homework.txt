@@ -1,0 +1,74 @@
+vagrant@node1:~$ sudo useradd -m -s /bin/bash ivan
+vagrant@node1:~$ sudo passwd ivan
+New password:
+Retype new password:
+passwd: password updated successfully
+vagrant@node1:~$ sudo useradd -m -s /bin/bash mariana
+vagrant@node1:~$ sudo passwd mariana
+New password:
+Retype new password:
+passwd: password updated successfully
+vagrant@node1:~$ sudo groupadd gurus
+vagrant@node1:~$ sudo usermod -aG gurus ivan
+vagrant@node1:~$ sudo usermod -aG gurus mariana
+vagrant@node1:~$ sudo cat /etc/group
+vagrant@node1:~$ kubectl create namespace projectx
+
+vagrant@node1:~$ cd /home/ivan/
+vagrant@node1:/home/ivan$ sudo mkdir .certs
+vagrant@node1:/home/ivan$ cd .c
+-bash: cd: .c: No such file or directory
+vagrant@node1:/home/ivan$ cd .certs/
+vagrant@node1:/home/ivan/.certs$ sudo openssl genrsa -out ivan.key 2048
+Generating RSA private key, 2048 bit long modulus (2 primes)
+.........+++++
+......................+++++
+e is 65537 (0x010001)
+vagrant@node1:/home/ivan/.certs$ sudo openssl req -new -key ivan.key -out ivan.csr -subj "/CN=ivan"
+vagrant@node1:/home/ivan/.certs$ sudo openssl x509 -req -in ivan.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key -CAcreateserial -out ivan.crt -days 365
+Signature ok
+subject=CN = ivan
+Getting CA Private Key
+vagrant@node1:/home/ivan/.certs$ kubectl config set-credentials ivan --client-certificate=/home/ivan/.certs/ivan.crt --client-key=/home/ivan/.certs/ivan.key
+User "ivan" set.
+vagrant@node1:/home/ivan/.certs$ kubectl config set-context ivan-context --cluster=kubernetes --user=ivan
+Context "ivan-context" created.
+
+sudo mkdir /home/ivan/.kube
+sudo cp ~/.kube/config /home/ivan/.kube/config
+sudo vi /home/ivan/.kube/config  -- setup config file
+sudo chown -R john: /home/ivan/
+
+... same with mariana
+
+vagrant@node1:~$ kubectl apply -f limitRange.yaml -n projectx
+limitrange/limits created
+
+vagrant@node1:~$ kubectl apply -f role.yaml
+role.rbac.authorization.k8s.io/all-role created
+
+vagrant@node1:~$ kubectl apply -f ivan-binding.yaml
+rolebinding.rbac.authorization.k8s.io/ivan created
+
+vagrant@node1:~$ kubectl apply -f mariana-binding.yaml
+rolebinding.rbac.authorization.k8s.io/mariana created
+
+ scp -r .\homework-files\ ivan@192.168.99.101:/home/ivan/
+vagrant@192.168.99.101's password:
+consumer-deployment.yml                                                                                                   100%  540   342.4KB/s   00:00
+consumer-svc.yml                                                                                                          100%  253   239.2KB/s   00:00
+producer-deployment.yml                                                                                                   100%  540   510.5KB/s   00:00
+producer-svc.yml
+
+su - ivan
+kubectl apply -f ./homework-files/
+exit
+
+vagrant@node1:~$ kubectl apply -f network-policies.yaml
+networkpolicy.networking.k8s.io/access-producer created
+networkpolicy.networking.k8s.io/access-consumer created
+
+kubectl exec -it client -n projectx -- sh
+curl --connect-timeout 5 http://producer:5000
+
+curl --connect-timeout 5 http://consumer:5000

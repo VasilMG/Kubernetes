@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: client
+  namespace: projectx
+  labels:
+    app: client 
+spec:
+  containers:
+  - image: alpine
+    command: ["sleep", "1d"]
+    name: main

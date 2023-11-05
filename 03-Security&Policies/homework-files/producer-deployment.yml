@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-deploy
+  namespace: projectx
+spec:
+  replicas: 2
+  selector:
+    matchLabels: 
+      app: producer-app
+      role: producer
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: producer-app
+        role: producer
+    spec:
+      containers:
+      - name: prod-container
+        image: shekeriev/k8s-producer:latest
+        ports:
+        - containerPort: 5000

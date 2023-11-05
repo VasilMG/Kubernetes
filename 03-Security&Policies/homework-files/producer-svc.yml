@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: producer
+  namespace: projectx
+  labels:
+    app: producer-app
+    role: producer
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5000
+    protocol: TCP
+  selector:
+    app: producer-app
+    role: producer
