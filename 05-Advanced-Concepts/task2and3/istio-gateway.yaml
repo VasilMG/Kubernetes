@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: apps-gateway
+spec:
+  # The selector matches the ingress gateway pod labels.
+  # If you installed Istio using Helm following the standard documentation, this would be "istio=ingress"
+  selector:
+    istio: ingressgateway # use istio default controller
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "*"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: appinfo
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - apps-gateway
+  http:
+  - match:
+    - uri:
+        exact: /pod1
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: service1
+        port:
+          number: 80
+  - match:
+    - uri:
+        exact: /pod2
+    rewrite:
+      uri: /
+    route:
+    - destination:
+        host: service2
+        port:
+          number: 80
+  - match:
+    - uri:
+        exact: /
+    route:
+    - destination:
+        host: serviced
+        port:
+          number: 80

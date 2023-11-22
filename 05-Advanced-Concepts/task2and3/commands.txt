@@ -1,0 +1,45 @@
+curl -L https://istio.io/downloadIstio | sh -
+
+./istio-1.20.0/bin/istioctl install --set profile=demo -y
+
+kubectl label namespace default istio-injection=enabled
+
+kubectl apply -f pod-1.yaml
+kubectl apply -f pod-2.yaml
+kubectl apply -f pod-d.yaml
+
+kubectl apply -f istio-gateway.yaml
+./istio-1.20.0/bin/istioctl analyze
+
+export INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="http2")].nodePort}')
+export SECURE_INGRESS_PORT=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.spec.ports[?(@.name=="https")].nodePort}')
+
+export INGRESS_HOST=$(kubectl get po -l istio=ingressgateway -n istio-system -o jsonpath='{.items[0].status.hostIP}')
+
+export GATEWAY_URL=$INGRESS_HOST:$INGRESS_PORT
+
+echo "http://$GATEWAY_URL/"
+
+in a browser - we use "http://$GATEWAY_URL/" + /pod1 or /pod2
+
+delete the http gateway --> kubectl delete -f istio-gateway.yaml
+
+TLS:
+
+mkdir example_certs1
+openssl req -x509 -sha256 -nodes -days 365 -newkey rsa:2048 -subj '/O=example Inc./CN=example.com' -keyout example_certs1/example.com.key -out example_certs1/example.com.crt
+
+create a secret:
+
+kubectl create -n istio-system secret tls example-credential \
+  --key=example_certs1/example.com.key \
+  --cert=example_certs1/example.com.crt
+
+kubectl apply -f tls-gateway.yaml
+
+in a browser - we use "https://$GATEWAY_URL/" + /pod1 or /pod2
+
+we can change the hosts to "example.com" and change our etc/hosts file and do:
+in a browser - we use "https:/example.com/" + /pod1 or /pod2
+
+attached in pictures.
