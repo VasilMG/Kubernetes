@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homework-cm
+  namespace: homework
+data:
+  index.html: {{ .Values.contentText }}

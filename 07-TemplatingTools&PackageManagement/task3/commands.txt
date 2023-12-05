@@ -1,0 +1,8 @@
+Make all files and folders:
+
+helm show chart task3
+helm install test1 task3
+helm list
+kubectl get pods,svc,cm -n homework
+
+helm uninstall test1

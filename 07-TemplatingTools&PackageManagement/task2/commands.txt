@@ -1,0 +1,21 @@
+
+mkdir -p task2/{base,overlays}
+
+mkdir -p task2/overlays/{test,production}
+
+mv ./homework.yaml ./task2/base/homework.yaml
+
+vi ./task2/base/kustomization.yaml
+vi ./task2/test/kustomization.yaml
+vi ./task2/production/kustomization.yaml
+vi ./task2/production/replicas.yaml
+vi ./task2/test/replicas.yaml
+vi ./task2/production/ports.yaml
+vi ./task2/test/ports.yaml
+
+cd ./task2
+
+kustomize build base/
+kustomize build overlays/test
+kustomize build base/production
+

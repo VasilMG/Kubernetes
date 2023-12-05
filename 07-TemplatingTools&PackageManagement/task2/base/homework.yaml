@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homework
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework
+  namespace: homework
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hw
+  template:
+    metadata:
+      labels:
+        app: hw
+    spec:
+      containers:
+      - image: shekeriev/k8s-oracle
+        name: homework
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hw
+  name: homework-svc
+  namespace: homework
+spec:
+  ports:
+  - port: 5000
+    nodePort: 32000
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: hw
+  type: NodePort

@@ -1,0 +1,26 @@
+kubectl apply -f scenario-3.yaml
+kubectl describe startup-mixed
+kubectl logs startup-mixed -c cont-main
+
+
+kubectl delete -f scenario-3.yaml
+
+vi scenario-3.yaml
+Corrections:
+
+Command on init-data changed to:
+args changed: echo '(Almost) Always Ready to Serve ;)' > /usr/share/nginx/html/index.html  
+mountPath also changed to:  /usr/share/nginx/html/
+
+
+On cont-main:
+startupProbe - changed to cat /usr/share/nginx/html/index.html
+failureThreshold: 5
+
+
+Sevice - changed label to 'startup-mixed' and port changed to 
+
+
+kubectl apply -f scenario-3.yaml
+
+

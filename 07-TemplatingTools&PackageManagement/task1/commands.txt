@@ -1,0 +1,14 @@
+vi ~/task1/homework.yaml
+change:
+replicas: %replicas%
+nodePort: %nodeport%
+
+sed s/%replicas%/3/ ./task1/homework.yaml | sed s/%nodeport%/32000/ | kubectl apply -f -
+
+or
+
+sed s/%replicas%/3/ ~/task1/homework.yaml | sed s/%nodeport%/32000/ > apply-homework.yaml
+
+kubectl apply -f apply-homework.yaml 
+
+

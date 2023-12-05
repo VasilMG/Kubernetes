@@ -1,0 +1,17 @@
+kubectl apply -f scenario-2.yaml
+kubectl logs readiness-http -c init-data
+
+kubectl delete -f scenario-2.yaml
+
+vi scenario-2.yaml
+Corrections:
+Volume mounts changed to 'data' not 'html'
+Command on init-data changed to: '/bin/sh'
+args changed: echo '(Almost) Always Ready to Serve ;)' > /usr/share/nginx/html/index.html  
+Sevice - changed label to 'readiness-http'
+
+kubectl apply -f scenario-2.yaml
+
+
+
+

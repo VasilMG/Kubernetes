@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homework
+  namespace: homework
+spec:
+  replicas: {{ .Values.replicasCount}}
+  selector:
+    matchLabels:
+      app: homework
+  template:
+    metadata:
+      labels:
+        app: homework
+    spec:
+      containers:
+      - image: nginx
+        name: homework
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html
+        configMap:
+          name: homework-cm

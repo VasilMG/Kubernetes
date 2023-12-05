@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: factsnp
+spec:
+  selector:
+    app: facts
+  type: NodePort
+  ports:
+  - port: 5000
+    nodePort: 30001
+    protocol: TCP
